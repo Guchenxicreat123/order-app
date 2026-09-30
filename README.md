@@ -2,6 +2,89 @@
 
 > 基于 V1 改造，增加了真实微信登录、JWT 角色鉴权、库存原子扣减、订单分页等。
 
+> ⚠️ **本仓库是公开脱敏版本**：所有真实域名 / IP / 密码已替换为占位符（`your-domain.example.com` / `192.168.x.x` / `<ROOT_PASSWORD>`）。**clone 后必须先按下方"部署前必改项"修改后才能跑起来**。
+
+---
+
+## 🚨 部署前必改项（按文件定位）
+
+下面所有 `<占位符>` 都是从代码里复制的实际字符串，逐项替换即可。
+
+### 1. 后端 Spring Boot — `backend/src/main/resources/application.yml`
+
+| 行 | 占位符 | 说明 |
+|---|---|---|
+| 26 | `dev-secret-change-in-prod` | JWT 签名密钥，**生产环境必须用 64+ 随机字符串**（建议 `openssl rand -hex 32`）|
+| 34 | `${WECHAT_APPID:}` | 微信小程序 AppID（`wx...` 开头的字符串，微信公众平台获取）|
+| 35 | `${WECHAT_SECRET:}` | 微信小程序 AppSecret（重置后只显示一次，妥善保存）|
+| 79–80 | 同上（小程序登录用） | 同上 |
+
+### 2. Node 后台 API — `admin-api/src/auth.js`
+
+| 行 | 占位符 | 说明 |
+|---|---|---|
+| 17 | `order-admin-api-dev-secret-change-me` | admin-api 的 JWT 密钥，**与上面 backend 的密钥不同** |
+| 20 | `123456` | admin-api 默认管理员密码，**必须改** |
+
+### 3. 小程序前端 — `miniprogram/src/utils/request.js`
+
+| 行 | 占位符 | 说明 |
+|---|---|---|
+| 7 | `https://your-domain.example.com` | 后端 API 的公网域名（HTTPS，**不要用 IP 也不要 http**）|
+
+### 4. 小程序前端 — `miniprogram/vite.config.js`
+
+| 行 | 占位符 | 说明 |
+|---|---|---|
+| 7 | `http://192.168.x.x:8006` | 仅 H5 平台 dev 用的本地后端地址，本机开发才需要改 |
+
+### 5. 小程序工程配置 — `miniprogram/src/manifest.json` + `project.config.json`
+
+| 字段 | 占位符 | 说明 |
+|---|---|---|
+| `appid` | `__UNI__XXXXXXX` / `""` | 改成你自己申请的小程序 AppID |
+| `mp-weixin.appid` | `wxd3c79b126b6ba442` | 同上 |
+
+### 6. 管理后台 — `admin-web/src/api/index.js`
+
+| 行 | 占位符 | 说明 |
+|---|---|---|
+| 10 | `http://192.168.x.x:8006/api` | 默认 API 地址，**生产环境必须通过 `.env.production` 设置 `VITE_API_URL` 覆盖** |
+
+### 7. Docker Compose — `docker-compose.yml`（4 处 `${MYSQL_*:...}`）
+
+| 行 | 占位符 | 说明 |
+|---|---|---|
+| 9 | `<ROOT_PASSWORD>` | MySQL root 密码（**不要留默认值**）|
+| 12 / 42 | `<APP_PASSWORD>` | MySQL 应用用户密码 |
+| 25 | 同 root 密码 | healthcheck 用的密码，必须和 9 行一致 |
+| 43 | `dev-secret-change-in-prod` | 后端 JWT 密钥（与 application.yml 26 行保持一致）|
+| 61 | `mock_test1234` | admin-api 默认管理员 openid 注释，**真上线后这行可以删** |
+| 88 | `<APP_PASSWORD>` | backend 连接数据库的密码 |
+| 91 | `order-admin-api-secret-change-in-production` | admin-api JWT 密钥（与 auth.js 第 17 行保持一致）|
+
+> 💡 建议：把上述密码都放进仓库根目录的 `.env` 文件（**必须加进 `.gitignore`**），用 `docker compose --env-file .env up` 启动。
+
+### 8. 部署脚本 — `deploy.sh`
+
+| 行 | 占位符 | 说明 |
+|---|---|---|
+| 49 | `<ROOT_PASSWORD>` | MySQL root 密码 fallback |
+
+---
+
+## ✅ 改完后跑一遍的检查清单
+
+- [ ] 所有 `<...>` 占位符都已替换
+- [ ] `application.yml` 的 `JWT_SECRET` ≠ `admin-api/auth.js` 的 `ADMIN_JWT_SECRET`（两个密钥**必须不同**）
+- [ ] `MYSQL_ROOT_PASSWORD` = `deploy.sh` 第 49 行 = `docker-compose.yml` 第 25 行
+- [ ] 微信 `appid` / `secret` 已替换成你自己申请的
+- [ ] 小程序 `manifest.json` 的 `appid` 已替换
+- [ ] 生产环境的 `BASE_URL` 用 HTTPS 域名（不用 IP 也不用 HTTP）
+- [ ] `.env` / `application.yml` 已加进 `.gitignore`，**不要 commit 真实密码**
+
+---
+
 ## 技术栈
 
 | 层 | 技术 |
