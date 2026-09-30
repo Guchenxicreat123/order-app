@@ -1,0 +1,81 @@
+server:
+  address: 0.0.0.0
+  port: 8006
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: order-app
+  profiles:
+    active: dev
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+      # 已移除 logic-delete-field，表无 deleted 字段
+
+# ============ JWT 配置（环境变量注入）============
+jwt:
+  secret: ${JWT_SECRET:dev-secret-change-in-prod}
+  # 普通用户 token 有效期 3 天（小程序冷启动会自动重登，过期无感）
+  user-expire-millis: ${JWT_USER_EXPIRE_MILLIS:259200000}
+  # 主厨/管理端 token 有效期 2 小时（管理后台权限高，缩短被盗用窗口）
+  admin-expire-millis: ${JWT_ADMIN_EXPIRE_MILLIS:7200000}
+
+# ============ 微信登录配置（环境变量注入）============
+wechat:
+  appid: ${WECHAT_APPID:}
+  secret: ${WECHAT_SECRET:}
+  # true=强制走真实微信接口，false=本地/H5开发用mock（默认false）
+  force-real: ${WECHAT_FORCE_REAL:false}
+  # 订阅消息模板 ID（微信公众平台申请后填入，留空走 mock）
+  template:
+    new-order: ${WECHAT_TEMPLATE_NEW_ORDER:}
+    status-changed: ${WECHAT_TEMPLATE_STATUS_CHANGED:}
+
+# ============ 应用配置（环境变量注入）============
+app:
+  # 管理后台"admin"账号对应的用户 openId（迁移前为数字 id=10 的 mock_test1234）
+  admin-openid: ${APP_ADMIN_OPENID:mock_test1234}
+
+# ============ 推送配置 ============
+push:
+  # dry-run 模式：true = 只写 t_push_log，不真发微信接口（避免测试期间扣额度/被微信降权）
+  # ⚠️ 提交测试版到微信审核前可以设为 true 保护额度
+  # ⚠️ 正式上线必须改回 false！
+  dry-run: ${PUSH_DRY_RUN:false}
+
+# ============ 日志配置 ============
+logging:
+  level:
+    com.example.order: INFO
+    com.example.order.service.PushService: DEBUG    # 推送细节
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n"
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: jdbc:mysql://mysql:3306/order_app?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+    username: ${MYSQL_USER:myapp}
+    password: ${MYSQL_PASSWORD:change-me}
+  wechat:
+    appid: ${WECHAT_APPID:}
+    secret: ${WECHAT_SECRET:}
+    force-real: ${WECHAT_FORCE_REAL:false}

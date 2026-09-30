@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- 品牌底色：暖橙圆角方块（管理后台主色 #FF6B35） -->
+  <rect width="64" height="64" rx="14" fill="#FF6B35"/>
+
+  <!-- 勺头 -->
+  <ellipse cx="32" cy="22" rx="13" ry="15" fill="#FFFFFF"/>
+  <!-- 勺头内圈（呼应启动页 spoon.svg 的双层结构） -->
+  <ellipse cx="32" cy="22" rx="7" ry="9" fill="#FFD8A8"/>
+
+  <!-- 勺柄 -->
+  <rect x="29.5" y="34" width="5" height="20" rx="2.5" fill="#FFFFFF"/>
+
+  <!-- 右上角金色小光点（呼应启动页金色光晕 / heart-gold） -->
+  <circle cx="48" cy="18" r="3" fill="#FFC93C"/>
+</svg>

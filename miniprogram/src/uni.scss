@@ -1,0 +1,175 @@
+/* ============================================================
+ * 勺意点餐 · 甜美少女粉渐变主题 · SCSS 设计令牌
+ * ------------------------------------------------------------
+ * 用法：任意 <style lang="scss"> 里直接使用这些变量（uni-app 自动注入）。
+ *
+ * ⚠️ 重要：小程序端**不支持 CSS 变量在 SCSS 编译期做运算**，
+ *   这里的 SCSS 变量只用于「编译期取值」；运行时换肤靠 App.vue 里
+ *   page{} 上的 CSS 自定义属性。两套必须保持一致 —— 改色时同改两处。
+ * ============================================================ */
+
+/* ---------- 0. 设计锚点 ----------
+ * 亮色主题「通病」对策：
+ *   1) 大面积渐变别铺满 100vh —— 用「顶部深粉 fixed 渐变层 + 底下浅薄荷白」
+ *      长列表滚动时自然过渡到浅色，白卡片不会糊进白底。
+ *   2) 顶部深粉区（约前 30% 屏）文字用纯白 + 粉色发光；
+ *     下方浅色区【绝对禁止白字】—— 主标题深玫瑰灰、正文深灰、副标题半透明。
+ *   3) 卡片靠「粉系光晕阴影 + 高透白毛玻璃」拉开层次，绝不用黑色投影。
+ *   4) 重色锚点（主按钮 / tab 选中态 / 关键数字）用深粉 #FF7B94，
+ *      文字关键处用深玫瑰灰 #7A4A5A 压住阵脚。 */
+
+/* ---------- 1. 色阶（官方规范） ---------- */
+$coral:         #FF7B94;   // 珊瑚粉 · 主色/渐变深端/重色锚点
+$coral-strong:  #FF5D7E;   // 更深一档珊瑚（按钮悬停/强调）
+$mint:          #DAFFFB;   // 薄荷白/极浅青 · 渐变浅端/底色
+$mint-soft:     #EDFFFF;   // 更柔一档浅底（弱背景）
+$rose:          #7A4A5A;   // 深玫瑰灰 · 浅底主文字
+$body-gray:     #333333;   // 正文深灰 · 辅助
+$white:         #FFFFFF;   // 高光文字（仅深粉/薄荷渐变上的文字）
+$pink-bg:       #FDF8F9;   // 页面兜底背景
+
+/* 浅色区的文字色（从规范色衍生） */
+$rose-60: rgba(122, 74, 90, 0.60);  // §规范原值（仅大字号/装饰用，小字对比度仅 2.83:1）
+$rose-75: rgba(122, 74, 90, 0.75);  // 副标题实际用值（3.9:1，跨过 AA-large）
+$rose-62: rgba(122, 74, 90, 0.62);  // 辅助/占位实际用值
+$rose-48: rgba(122, 74, 90, 0.48);  // 更淡的装饰字（慎用于成片正文）
+$rose-14: rgba(122, 74, 90, 0.14);  // 极淡描边
+$rose-18: rgba(122, 74, 90, 0.18);  // 分割线/描边实际用值
+$coral-50: rgba(255, 123, 148, 0.50); // 白字发光用（text-shadow）
+
+/* ---------- 2. 语义别名 ---------- */
+$primary-color:        $coral;        // #FF7B94
+$primary-color-dark:   $coral-strong; // 深粉（按压/强调）
+$primary-color-deep:   $rose;         // 深玫瑰灰（关键文字落点）
+$primary-color-light:  rgba(255, 123, 148, 0.14); // 主色浅底（选中底）
+$primary-color-lighter: $mint;        // 极浅薄荷
+$bg-color:             $pink-bg;      // #FDF8F9
+$bg-card:              rgba(255, 255, 255, 0.60);
+
+/* 文字 */
+$text-main:   $rose;         // 深玫瑰灰 · 主标题
+$text-body:   $body-gray;    // 深灰 · 正文（规范正文色）
+$text-sub:    $rose-75;      // 副标题
+$text-hint:   $rose-62;      // 辅助/占位
+$text-line:   $rose-18;      // 分割线/描边
+$text-on-primary: $white;    // 深粉/薄荷渐变上的白字
+$text-on-dark:    $white;    // 语义名：深粉区白字
+$text-on-light:   $rose;     // 语义名：浅色区深玫瑰灰字
+
+/* ---------- 3. 渐变 ---------- */
+/* 顶部深粉渐变层：135° 珊瑚粉 → 薄荷白。只铺在页面顶部固定层，
+ * 不要铺满全屏 —— 长列表往下滚时由底下浅薄荷白兜底。 */
+$bg-gradient:       linear-gradient(135deg, $coral 0%, $mint 100%);
+/* 主背景（页面 body）：极浅薄荷 → 柔薄荷，接近纯白，卡片不糊 */
+$bg-gradient-soft:  linear-gradient(135deg, $mint-soft 0%, $mint 100%);
+/* 上粉下浅 · 标题区专用（配合顶部 fixed 渐变层） */
+$bg-gradient-hero:  linear-gradient(180deg, $coral 0%, rgba(255,123,148,.45) 46%, $mint 100%);
+/* 主按钮：珊瑚粉 → 深粉（重色锚点） */
+$primary-gradient:  linear-gradient(135deg, $coral 0%, $coral-strong 100%);
+$primary-gradient-deep: linear-gradient(135deg, $coral-strong 0%, $rose 100%);
+$primary-gradient-soft: linear-gradient(135deg, $mint 0%, rgba(255,123,148,.55) 100%);
+
+/* ---------- 4. 粉色系阴影（规范：绝不用黑色，共用粉色光晕） ---------- */
+$shadow-card:  0 8rpx 32rpx rgba(255, 123, 148, 0.15), 0 1rpx 0 rgba(255,255,255,.95) inset;  // 规范光晕 + 点2内高光
+$shadow-soft:  0 4rpx 20rpx rgba(255, 123, 148, 0.10);
+$shadow-btn:   0 8rpx 24rpx rgba(255, 123, 148, 0.35), 0 1rpx 0 rgba(255,255,255,.95) inset;      // 主按钮
+$shadow-deep:  0 12rpx 48rpx rgba(122, 74, 90, 0.16);    // 浮层深影
+$glow-primary: 0 8rpx 32rpx rgba(255, 123, 148, 0.15), 0 1rpx 0 rgba(255,255,255,.95) inset;     // 玻璃卡微光
+$glow-press:   0 3rpx 12rpx rgba(255, 123, 148, 0.20);   // 按下收紧
+$shadow-float: 0 16rpx 56rpx rgba(122, 74, 90, 0.18), 0 2rpx 0 rgba(255,255,255,1) inset;       // 浮层
+
+/* ---------- 5. 毛玻璃（务必先写不透明/半透明白底作降级） ----------
+ * 规范：卡片 rgba(255,255,255,.6) + blur(20rpx) + 1px 白描边。
+ * 高透度保证亮色背景下卡片有“玻璃”立体感；安卓不认 backdrop-filter 时
+ * 就落到 rgba 半透明白底（仍是浅色，不透明卡片糊底问题基本可控）。 */
+$glass-bg:         rgba(255, 255, 255, 0.60);   // 卡片主玻璃（规范）
+$glass-bg-strong:  rgba(255, 255, 255, 0.78);   // 更强的不透明（浮层）
+$glass-bg-weak:    rgba(255, 255, 255, 0.42);   // 弱玻璃（叠彩色区）
+$glass-blur:       20rpx;
+$glass-blur-strong: 40rpx;
+$glass-border:     1rpx solid rgba(255, 255, 255, 0.8);  // 规范玻璃边缘高光
+
+/* ---------- 5.5 语义色（与 App.vue --c-* 对齐；状态色与主题色解耦） ---------- */
+$c-info:         #B4637A;   // 信息/待处理（玫瑰灰）
+$c-info-bg:      #FFF0F3;
+$c-success:      #22B573;
+$c-success-bg:   #E3F7EE;
+$c-warning:      #F5A623;
+$c-warning-bg:   #FFF6E5;
+$c-danger:       #E5484D;
+$c-danger-bg:    #FFE4E2;
+$c-neutral:      rgba(122, 74, 90, 0.75);
+$c-neutral-bg:   rgba(255, 240, 243, 0.8);
+
+/* ---------- 6. 圆角 / 字号（与 App.vue token 对齐） ---------- */
+$radius-sm:  16rpx;
+$radius-md:  24rpx;
+$radius-card: 32rpx;
+$radius-lg:  40rpx;
+$radius-pill: 999rpx;
+
+$font-xs:  22rpx;
+$font-sm:  24rpx;
+$font-md:  28rpx;
+$font-lg:  32rpx;
+$font-xl:  36rpx;
+$font-xxl: 44rpx;
+
+$weight-thin: 300;
+$weight-base: 400;
+$weight-bold: 500;
+
+/* ---------- 7. mixin（供 <style lang="scss"> 复用） ---------- */
+
+/* 页面兜底背景：浅薄荷，避免滚动到底时露出一条粉。 */
+@mixin page-bg {
+  background: $pink-bg;               // #FDF8F9
+  background-image: $bg-gradient-soft; // 极浅薄荷微渐变
+  min-height: 100vh;
+}
+
+/* 顶部深粉渐变层（fixed 固定，长列表滚动背景不动）。
+ * 用法：页面根节点放 <view class="hero-bg"></view>，
+ * 内容层要 relative + z-index，避免被盖住。
+ * ⚠️ 切勿把这个渐变铺满 100vh —— 会让底部浅色区也变粉，白卡片和白字糊裉。
+ * 规范建议高度 400rpx，可依页面再收窄。 */
+@mixin hero-top($height: 400rpx) {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: $height;
+  z-index: 0;
+  background: $bg-gradient;           // 珊瑚粉 → 薄荷
+  pointer-events: none;
+  /* 向下衰减到透明，让下方浅薄荷底自然衔接 */
+  mask-image: linear-gradient(180deg, #000 0%, rgba(0,0,0,.55) 55%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0,0,0,.55) 55%, transparent 100%);
+}
+
+/* 毛玻璃卡片：高透白 + 模糊 + 白微光描边 + 粉色光晕（规范） */
+@mixin glass-card($bg: $glass-bg, $blur: $glass-blur, $radius: $radius-card) {
+  background: $bg;                             // 安卓降级底色（绝不能去掉）
+  -webkit-backdrop-filter: blur($blur);
+  backdrop-filter: blur($blur);
+  border: $glass-border;
+  border-radius: $radius;
+  box-shadow: $glow-primary;                    // 粉色光晕，非黑
+}
+
+/* 主按钮：深粉渐变 + 纯白字 + 粉色发光投影（重色锚点） */
+@mixin btn-primary {
+  background: $primary-gradient;
+  color: $white;
+  border: none;
+  border-radius: $radius-pill;
+  box-shadow: $shadow-btn;
+  font-weight: $weight-base;
+  letter-spacing: 2rpx;
+}
+
+/* 胶囊标签「左薄荷/右深粉」横向渐变（规范）：
+ * 左半文字深玫瑰灰，右半文字纯白。 */
+@mixin pill-mirror {
+  background: linear-gradient(90deg, $mint 0%, $coral 100%);
+  .pill-label { color: $rose; }       // 左：深玫瑰灰
+  .pill-num   { color: $white; }      // 右：纯白 + 微光
+}

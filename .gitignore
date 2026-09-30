@@ -1,0 +1,27 @@
+# Docker 镜像构建产物不入库
+node_modules/
+dist/
+
+# 环境变量（含密钥，禁止入库）
+.env
+.env.*
+!.env.example
+
+# === 新增：2026-09-29 同步时补充 ===
+# Spring Boot 构建产物
+backend/target/
+
+# Vue 构建产物（已构建的 admin-web 静态资源）
+admin-web-serve/
+
+# 微信小程序个人配置（含 appid）
+project.private.config.json
+
+# 本地 MANIFEST 中间产物
+MANIFEST_backup_*.sha256
+
+# 旧版环境变量备份
+.env.backup.*
+
+# 数据库数据目录
+data/

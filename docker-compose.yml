@@ -1,0 +1,132 @@
+name: order-app
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: order-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-<ROOT_PASSWORD>}
+      MYSQL_DATABASE: order_app
+      MYSQL_USER: ${MYSQL_USER:-myapp}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-<APP_PASSWORD>}
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      # 容器内开放监听，但仅限 order-net 内部网络访问（不发布端口到宿主机/外网，最安全）
+      - --bind-address=0.0.0.0
+    volumes:
+      # 使用 named volume（避免 bind mount 在本机权限问题）
+      - order-app-mysql-data:/var/lib/mysql
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/01-init.sql
+    networks:
+      - order-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p${MYSQL_ROOT_PASSWORD:-<ROOT_PASSWORD>}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: order-app
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      MYSQL_USER: ${MYSQL_USER:-myapp}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-<APP_PASSWORD>}
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-in-prod}
+      # ========== 时区：保证 LocalDateTime.now() 写入的时间是北京时间 ==========
+      TZ: Asia/Shanghai
+      # ========== 微信小程序登录配置 ==========
+      # 注：微信 appid / secret 是小程序维度（同一个 .env 文件即可，所有用户共用）。
+      # 用户身份区分靠微信服务端返回的 openid（系统已用 openid 作主键，无需为每个用户单独配）。
+      WECHAT_APPID: ${WECHAT_APPID:-}
+      WECHAT_SECRET: ${WECHAT_SECRET:-}
+      # true = 强制走真实微信接口（取消 mock）；未配 appid/secret 时会拒绝登录
+      WECHAT_FORCE_REAL: ${WECHAT_FORCE_REAL:-false}
+      # ========== 微信订阅消息模板 ==========
+      # 申请路径：mp.weixin.qq.com → 功能 → 订阅消息
+      # ⚠️ 不配这两个 ID，推送只会写 t_push_log 不会真发（见 PushService.sendTemplate）
+      WECHAT_TEMPLATE_NEW_ORDER: ${WECHAT_TEMPLATE_NEW_ORDER:-}
+      WECHAT_TEMPLATE_STATUS_CHANGED: ${WECHAT_TEMPLATE_STATUS_CHANGED:-}
+      # ========== 管理后台 admin 账号 ==========
+      # admin-web 用 admin/123456 登录时，后端查该 openId 关联的用户作为管理员。
+      # 生产环境请填入真实管理员用户的 openid（首次登录后查看 t_user.open_id）。
+      APP_ADMIN_OPENID: ${APP_ADMIN_OPENID:-mock_test1234}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-}
+      # 推送 dry-run 开关（true=只写日志不真发，测试版期间保护额度）
+      PUSH_DRY_RUN: ${PUSH_DRY_RUN:-false}
+    ports:
+      # 直接暴露到宿主机，方便测试：http://服务器IP:8006
+      - "8006:8006"
+    networks:
+      - order-net
+
+  # ========== 独立后台管理服务 ==========
+  # 只校验管理员账号密码（t_admin_user），直接读写 MySQL，不经过小程序后端。
+  # 不在宿主机发布端口：只允许 admin-web 容器通过 order-net 内网访问，减小暴露面。
+  admin-api:
+    build:
+      context: ./admin-api
+      dockerfile: Dockerfile
+    container_name: order-admin-api
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_NAME: order_app
+      DB_USER: ${MYSQL_USER:-myapp}
+      DB_PASSWORD: ${MYSQL_PASSWORD:-<APP_PASSWORD>}
+      PORT: "8008"
+      # 管理员登录令牌签名密钥（换掉会使已登录的后台会话失效）
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET:-order-admin-api-secret-change-in-production}
+      ADMIN_TOKEN_TTL: ${ADMIN_TOKEN_TTL:-12h}
+      # 首次启动（表里没有管理员时）自动创建的账号
+      ADMIN_DEFAULT_USERNAME: ${ADMIN_DEFAULT_USERNAME:-admin}
+      ADMIN_DEFAULT_PASSWORD: ${ADMIN_DEFAULT_PASSWORD:-123456}
+      # ⚠️ 安全：默认密码检测开关。生产环境应为 false（拒绝以 123456 启动）
+      ADMIN_ALLOW_DEFAULT_PASS: ${ADMIN_ALLOW_DEFAULT_PASS:-false}
+    expose:
+      - "8008"
+    networks:
+      - order-net
+
+  admin-web:
+    build:
+      context: ./admin-web
+      dockerfile: Dockerfile
+    container_name: order-admin-web
+    restart: always
+    depends_on:
+      - admin-api
+    environment:
+      PORT: "8007"
+      # 容器内反向代理：前端请求同源 /api → 独立管理服务
+      ADMIN_API_HOST: admin-api
+      ADMIN_API_PORT: "8008"
+    ports:
+      # 后台管理界面：http://服务器IP:8007
+      - "8007:8007"
+    networks:
+      - order-net
+
+# 注：公网访问由飞牛系统的 Cloudflare Tunnel 插件（com.dustinky.tunnel）负责，
+# 不在本 compose 内管理。原 cloudflared 服务因缺少 --token 参数每次启动即退出
+# （ExitCode=255，重启 392 次），已于 2026-09-18 移除。
+
+networks:
+  order-net:
+    driver: bridge
+
+volumes:
+  order-app-mysql-data:
+    name: order-app-mysql-data

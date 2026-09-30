@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+    <!-- 勺头 -->
+    <ellipse cx="32" cy="22" rx="14" ry="16" fill="#FF7B94"/>
+    <ellipse cx="32" cy="22" rx="8" ry="10" fill="#E6FFFD"/>
+    <!-- 勺柄 -->
+    <rect x="29" y="36" width="6" height="22" rx="3" fill="#FF7B94"/>
+  </svg>

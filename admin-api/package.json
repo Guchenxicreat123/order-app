@@ -1,0 +1,18 @@
+{
+  "name": "order-admin-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "独立的后台管理服务：只校验管理员账号密码，直接读写 MySQL，不依赖小程序后端",
+  "type": "commonjs",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.11.0"
+  }
+}

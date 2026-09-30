@@ -1,0 +1,216 @@
+{
+  "pages": [
+    {
+      "path": "pages/welcome/welcome",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "勺意",
+        "navigationBarBackgroundColor": "#FF7B94",
+        "disableScroll": true
+      }
+    },
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "勺意",
+        "navigationBarBackgroundColor": "#FF7B94",
+        "navigationBarTextStyle": "white",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/category/category",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "已有菜单",
+        "navigationBarBackgroundColor": "#FF7B94",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/custom/custom",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "自定义菜品",
+        "navigationBarBackgroundColor": "#FF7B94",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/product/product",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "菜品详情",
+        "navigationBarBackgroundColor": "#FF7B94",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/cart/cart",
+      "style": {
+        "navigationBarTitleText": "购物车",
+        "navigationBarBackgroundColor": "#FF7B94",
+        "navigationBarTextStyle": "white",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/order/order",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "家庭订单",
+        "navigationBarBackgroundColor": "#FF7B94",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/mine/mine",
+      "style": {
+        "navigationBarTitleText": "我的",
+        "navigationBarBackgroundColor": "#FF7B94",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/family/family",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "我的家庭",
+        "navigationBarBackgroundColor": "#FF7B94",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/family/create",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "创建家庭",
+        "navigationBarBackgroundColor": "#FF7B94",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/family/join",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "加入家庭",
+        "navigationBarBackgroundColor": "#FF7B94",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/family/detail",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "家庭详情",
+        "navigationBarBackgroundColor": "#FF7B94",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/public-menu/public-menu",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "公共参考菜单",
+        "navigationBarBackgroundColor": "#FF7B94",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/public-dish-detail/public-dish-detail",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "菜品详情",
+        "navigationBarBackgroundColor": "#FF7B94",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/public-ingredients/public-ingredients",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "公共参考配菜",
+        "navigationBarBackgroundColor": "#FF7B94",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/shopping-list/shopping-list",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "买菜清单",
+        "navigationBarBackgroundColor": "#FF7B94",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/order/detail",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "订单详情",
+        "navigationBarBackgroundColor": "#FF7B94",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/edit-dishes/edit-dishes",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "编辑菜单",
+        "navigationBarBackgroundColor": "#FF7B94",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/edit-ingredients/edit-ingredients",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "编辑配菜",
+        "navigationBarBackgroundColor": "#FF7B94",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/confirm-orders/confirm-orders",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "订单确认",
+        "navigationBarBackgroundColor": "#FF7B94",
+        "navigationBarTextStyle": "white"
+      }
+    }
+  ],
+  "tabBar": {
+    "color": "#B99AA5",
+    "selectedColor": "#FF5D7E",
+    "backgroundColor": "#EDFFFF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "/static/tabbar/home.png",
+        "selectedIconPath": "/static/tabbar/home_sel.png"
+      },
+      {
+        "pagePath": "pages/cart/cart",
+        "text": "购物车",
+        "iconPath": "/static/tabbar/spoon.png",
+        "selectedIconPath": "/static/tabbar/spoon_sel.png"
+      },
+      {
+        "pagePath": "pages/mine/mine",
+        "text": "我的",
+        "iconPath": "/static/tabbar/user.png",
+        "selectedIconPath": "/static/tabbar/user_sel.png"
+      }
+    ]
+  },
+  "globalStyle": {
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "勺意",
+    "navigationBarBackgroundColor": "#FF7B94",
+    "backgroundColor": "#EDFFFF"
+  }
+}

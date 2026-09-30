@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+    <!-- 白色变体：两张纸轮廓改白，前排纸填充保持白以便层次 -->
+    <rect x="14" y="14" width="30" height="32" rx="3" fill="none" stroke="#FFFFFF" stroke-width="3"/>
+    <rect x="22" y="22" width="28" height="30" rx="3" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="3"/>
+    <rect x="28" y="32" width="16" height="3" rx="1" fill="#FF7B94"/>
+    <rect x="28" y="40" width="12" height="3" rx="1" fill="#FF7B94" opacity="0.6"/>
+  </svg>

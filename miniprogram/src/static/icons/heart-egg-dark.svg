@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+    <!-- 深色变体：实心深橘心 + 暖金蛋黄，用在浅橘底的卡上 -->
+    <path d="M32 56 C16 44 6 32 6 22 C6 14 12 8 20 8 C25 8 29 11 32 15 C35 11 39 8 44 8 C52 8 58 14 58 22 C58 32 48 44 32 56 Z" fill="#7A4A5A"/>
+    <circle cx="26" cy="24" r="6" fill="#FFC93C"/>
+  </svg>
